@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cupons da Loja</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f3f4f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { font-size: 20px; color: #111827; }
+    p { font-size: 14px; color: #6b7280; }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; width: 100%; max-width: 360px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 4px solid #10b981; }
+    .card-title { font-weight: bold; color: #111827; font-size: 16px; }
+    .card-desc { font-size: 13px; color: #4b5563; margin: 4px 0 12px; }
+    .coupon-box { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 6px; padding: 8px 12px; }
+    .code { font-weight: 700; color: #047857; letter-spacing: 1px; }
+    button { background: #111827; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    button:hover { background: #374151; }
+  </style>
+
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+            appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1",
+            serviceWorkerPath: "OneSignalSDKWorker.js",
+            serviceWorkerParam: { scope: "/meus-cupons/" } // troque pelo nome exato do seu repo
+        });
+    });
+    </script>
+</head>
+<body>
+
+  <header>
+    <h1>Cupons Exclusivos</h1>
+    <p>Ative as notificações para receber os novos cupons.</p>
+  </header>
+
+  <div class="card">
+    <div class="card-title">15% de Desconto na Primeira Compra</div>
+    <div class="card-desc">Válido para todo o catálogo do site ou loja física.</div>
+    <div class="coupon-box">
+      <span class="code" id="code1">PRIMEIRA15</span>
+      <button onclick="copiar('PRIMEIRA15')">Copiar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Frete Grátis Acima de R$ 99</div>
+    <div class="card-desc">Aproveite enquanto durarem os estoques.</div>
+    <div class="coupon-box">
+      <span class="code" id="code2">FRETEOFF</span>
+      <button onclick="copiar('FRETEOFF')">Copiar</button>
+    </div>
+  </div>
+
+  <script>
+    function copiar(codigo) {
+      navigator.clipboard.writeText(codigo);
+      alert('Cupom copiado: ' + codigo);
+    }
+  </script>
+</body>
+</html>
