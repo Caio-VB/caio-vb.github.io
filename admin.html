@@ -50,7 +50,6 @@
   <div class="card">
     <h2>Promoções no Ar</h2>
     
-    <!-- Avisos visuais da lista -->
     <div id="msg-erro-lista" class="alerta-erro"></div>
     <div id="msg-sucesso-lista" class="alerta-sucesso"></div>
 
@@ -61,16 +60,14 @@
 <script>
   const API_URL = "https://scxskwkcbxfdxswwfbxy.supabase.co/functions/v1/promocoes";
 
-  // Busca sempre limpa, ignorando qualquer cache
   async function carregarPromocoes() {
     const lista = document.getElementById('lista-promocoes');
     try {
-      // O ?t= já quebra o cache sozinho, sem disparar bloqueio de CORS
       const res = await fetch(`${API_URL}?t=${Date.now()}`);
       const promocoes = await res.json();
       
       if (!res.ok || !Array.isArray(promocoes)) {
-        throw new Error(promocoes.error || 'Erro ao consultar banco');
+        throw new Error(promocoes.error || 'Erro ao carregar banco');
       }
 
       if (!promocoes.length) {
@@ -92,7 +89,7 @@
       lista.innerHTML = `<p style='color: #ef4444;'>Erro ao carregar lista: ${e.message}</p>`;
     }
   }
-  
+
   async function cadastrarPromocao() {
     const senha = document.getElementById('senha').value;
     const titulo = document.getElementById('titulo').value;
@@ -111,7 +108,7 @@
 
     btn.disabled = true;
     status.style.color = "#0284c7";
-    status.innerText = "Enviando promoção e disparando push...";
+    status.innerText = "Salvando promoção e enviando notificação...";
 
     try {
       const res = await fetch(API_URL, {
@@ -124,12 +121,12 @@
       if (!res.ok) throw new Error(data.error || data.message || 'Falha ao cadastrar');
 
       status.style.color = "#059669";
-      status.innerText = "✅ Promoção publicada e notificação enviada com sucesso!";
+      status.innerText = `✅ Promoção salva e notificação enviada para ${data.destinatarios} aparelho(s)!`;
+      
       document.getElementById('titulo').value = '';
       document.getElementById('descricao').value = '';
       document.getElementById('validade').value = '';
       
-      // Atualiza a lista na hora
       await carregarPromocoes();
     } catch (err) {
       status.style.color = "#ef4444";
@@ -154,7 +151,7 @@
       return;
     }
 
-    if (!confirm('Deseja realmente remover esta promoção do aplicativo?')) return;
+    if (!confirm('Deseja realmente remover esta promoção?')) return;
 
     if (btnDel) {
       btnDel.disabled = true;
@@ -169,22 +166,15 @@
       });
 
       const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'Falha ao excluir');
-      }
+      if (!res.ok) throw new Error(data.error || data.message || 'Falha ao excluir');
 
-      // Sucesso: feedback visual e recarrega na hora
       sucessoBox.innerText = "✅ Promoção removida com sucesso!";
       sucessoBox.style.display = 'block';
 
-      // Remove da tela imediatamente
       const elemento = document.getElementById(`promo-${id}`);
       if (elemento) elemento.remove();
 
-      // Recarrega do banco sem cache
       await carregarPromocoes();
-
     } catch (err) {
       erroBox.innerText = "❌ Erro ao excluir: " + err.message;
       erroBox.style.display = 'block';
