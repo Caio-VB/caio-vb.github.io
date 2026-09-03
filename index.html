@@ -160,6 +160,11 @@
           disable: true
         }
       });
+
+      // Se o usuário já deu permissão antes, garante que o token está ativo no servidor
+      if (Notification.permission === "granted") {
+        OneSignal.User.PushSubscription.optIn();
+      }
     });
 
     async function ativarNotificacoes() {
