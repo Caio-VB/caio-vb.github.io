@@ -321,11 +321,11 @@
     .sheet-title { font-size: 17px; font-weight: 700; color: #1f140e; text-align: center; margin-bottom: 6px; }
     .sheet-sub { font-size: 13px; color: #786b62; text-align: center; margin-bottom: 22px; }
     .step-item { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-    .step-icon { width: 40px; height: 40px; background: #faece3; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #9a431a; }
+    .step-icon { width: 42px; height: 42px; background: #faece3; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .step-text { font-size: 14px; color: #334155; line-height: 1.35; }
     .btn-fechar-sheet { width: 100%; background: #f6f3ee; color: #403024; border: 1px solid #efe4d5; padding: 13px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 14px; }
 
-    /* Estilo Refinado das Opções de Mídia (Sem emojis) */
+    /* Estilo das Opções de Mídia */
     .btn-media-option {
       width: 100%;
       background: #ffffff;
@@ -492,7 +492,7 @@
       <!-- Banner Dica -->
       <div class="tip-box">
         <div class="tip-left">
-          <div class="tip-text">Dica: promoções ativas aparecem no aplicativo dos clientes e dirparam notificações em tempo real!</div>
+          <div class="tip-text">Dica: promoções ativas aparecem no aplicativo dos clientes e disparam notificações em tempo real!</div>
         </div>
         <div class="tip-coffee">☕</div>
       </div>
@@ -516,7 +516,7 @@
     </div>
   </nav>
 
-  <!-- Modal Opções de Foto com Design Vetorial -->
+  <!-- Modal Opções de Foto -->
   <div class="modal-overlay" id="midiaOverlay" onclick="fecharModalMidia()"></div>
   <div class="sheet-box" id="midiaSheet">
     <div class="sheet-title">Foto da Promoção</div>
@@ -546,39 +546,35 @@
     <button type="button" class="btn-fechar-sheet" onclick="fecharModalMidia()">Cancelar</button>
   </div>
 
-  <!-- Modais PWA de Instalação -->
+  <!-- Modal Tutorial iPhone (Exclusivo iOS) -->
   <div class="modal-overlay" id="iosOverlay" onclick="fecharModalIos()"></div>
   <div class="sheet-box" id="iosSheet">
     <div class="sheet-title">Instalar Painel no iPhone</div>
-    <div class="sheet-sub">Adicione o painel do lojista à Tela de Início:</div>
+    <div class="sheet-sub">Adicione o atalho administrativo à sua Tela de Início:</div>
+
     <div class="step-item">
       <div class="step-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
       </div>
       <div class="step-text">1. Na barra inferior do Safari, toque no botão <strong>Compartilhar</strong>.</div>
     </div>
+
     <div class="step-item">
       <div class="step-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3" ry="3"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
       </div>
       <div class="step-text">2. Role para baixo e toque em <strong>Adicionar à Tela de Início</strong>.</div>
     </div>
-    <button class="btn-fechar-sheet" onclick="fecharModalIos()">Entendido</button>
-  </div>
 
-  <div class="modal-overlay" id="androidOverlay" onclick="fecharModalAndroid()"></div>
-  <div class="sheet-box" id="androidSheet">
-    <div class="sheet-title">Instalar Painel no Android</div>
-    <div class="sheet-sub">Adicione o atalho administrativo à sua tela:</div>
-    <div class="step-item">
-      <div class="step-icon">⋮</div>
-      <div class="step-text">1. Toque nos <strong>3 pontinhos</strong> no canto superior do Chrome.</div>
-    </div>
-    <div class="step-item">
-      <div class="step-icon">📲</div>
-      <div class="step-text">2. Escolha <strong>Instalar aplicativo</strong> ou <strong>Adicionar à tela inicial</strong>.</div>
-    </div>
-    <button class="btn-fechar-sheet" onclick="fecharModalAndroid()">Entendido</button>
+    <button class="btn-fechar-sheet" onclick="fecharModalIos()">Entendido</button>
   </div>
 
   <script>
@@ -587,6 +583,7 @@
     
     let fotoBase64 = null;
 
+    // Foto e Câmera
     function abrirModalMidia() {
       document.getElementById('midiaOverlay').style.display = 'block';
       setTimeout(() => document.getElementById('midiaSheet').classList.add('active'), 10);
@@ -625,7 +622,7 @@
         btnLabel.innerText = "✅ Foto pronta (Trocar)";
       } catch (err) {
         alert("Erro ao processar imagem: " + err.message);
-        btnLabel.innerText = "Tirar Foto ou Escolher Galeria";
+        btnLabel.innerText = "Adicionar Foto da Promoção";
       }
     }
 
@@ -758,7 +755,7 @@
         
         document.getElementById('img-preview').style.display = 'none';
         document.getElementById('preview-placeholder').style.display = 'flex';
-        document.getElementById('btn-label-foto').innerText = "Tirar Foto ou Escolher Galeria";
+        document.getElementById('btn-label-foto').innerText = "Adicionar Foto da Promoção";
         
         await carregarPromocoes();
       } catch (err) {
@@ -823,7 +820,9 @@
       document.getElementById('msg-sucesso-lista').style.display = 'none';
     }
 
-    // PWA Admin Controls
+    // ============================================
+    // INSTALAÇÃO DO PWA (ADMIN)
+    // ============================================
     const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     const btnInstalarAdmin = document.getElementById('btn-instalar-admin');
@@ -838,19 +837,17 @@
       deferredPromptAdmin = e;
     });
 
-    function iniciarInstalacaoAdmin() {
+    async function iniciarInstalacaoAdmin() {
       if (isIos()) {
         abrirModalIos();
       } else if (deferredPromptAdmin) {
+        // Disparo nativo direto no Android/Chrome
         deferredPromptAdmin.prompt();
-        deferredPromptAdmin.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            btnInstalarAdmin.style.display = 'none';
-          }
-          deferredPromptAdmin = null;
-        });
-      } else {
-        abrirModalAndroid();
+        const { outcome } = await deferredPromptAdmin.userChoice;
+        if (outcome === 'accepted') {
+          btnInstalarAdmin.style.display = 'none';
+        }
+        deferredPromptAdmin = null;
       }
     }
 
@@ -861,14 +858,6 @@
     function fecharModalIos() {
       document.getElementById('iosSheet').classList.remove('active');
       setTimeout(() => document.getElementById('iosOverlay').style.display = 'none', 300);
-    }
-    function abrirModalAndroid() {
-      document.getElementById('androidOverlay').style.display = 'block';
-      setTimeout(() => document.getElementById('androidSheet').classList.add('active'), 10);
-    }
-    function fecharModalAndroid() {
-      document.getElementById('androidSheet').classList.remove('active');
-      setTimeout(() => document.getElementById('androidOverlay').style.display = 'none', 300);
     }
 
     carregarPromocoes();
