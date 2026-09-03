@@ -65,13 +65,15 @@
   async function carregarPromocoes() {
     const lista = document.getElementById('lista-promocoes');
     try {
-      const res = await fetch(`${API_URL}?t=${Date.now()}`, {
-        cache: 'no-store',
-        headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
-      });
+      // O ?t= já quebra o cache sozinho, sem disparar bloqueio de CORS
+      const res = await fetch(`${API_URL}?t=${Date.now()}`);
       const promocoes = await res.json();
       
-      if (!Array.isArray(promocoes) || !promocoes.length) {
+      if (!res.ok || !Array.isArray(promocoes)) {
+        throw new Error(promocoes.error || 'Erro ao consultar banco');
+      }
+
+      if (!promocoes.length) {
         lista.innerHTML = "<p style='color: #64748b; font-size: 13px;'>Nenhuma promoção ativa no momento.</p>";
         return;
       }
@@ -87,10 +89,10 @@
         </div>
       `).join('');
     } catch (e) {
-      lista.innerHTML = "<p style='color: #ef4444;'>Erro ao carregar lista de promoções.</p>";
+      lista.innerHTML = `<p style='color: #ef4444;'>Erro ao carregar lista: ${e.message}</p>`;
     }
   }
-
+  
   async function cadastrarPromocao() {
     const senha = document.getElementById('senha').value;
     const titulo = document.getElementById('titulo').value;
