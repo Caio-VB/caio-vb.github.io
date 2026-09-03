@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cupons da Loja</title>
 
-  <!-- Tags obrigatórias para o PWA no iOS -->
+  <!-- Metatags PWA essenciais para iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Cupons">
@@ -19,7 +19,6 @@
     h1 { font-size: 20px; color: #111827; }
     p { font-size: 14px; color: #6b7280; }
 
-    /* Botão obrigatório para o iOS autorizar */
     #btn-ativar {
       width: 100%;
       max-width: 360px;
@@ -34,6 +33,8 @@
       font-size: 15px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+
+    #btn-ativar:active { background: #047857; }
 
     .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; width: 100%; max-width: 360px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 4px solid #10b981; }
     .card-title { font-weight: bold; color: #111827; font-size: 16px; }
@@ -51,19 +52,40 @@
       await OneSignal.init({
         appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1",
       });
+      window.OneSignal = OneSignal;
     });
 
-    // Função disparada exclusivamente pelo toque do usuário
     async function ativarNotificacoes() {
-      if (window.OneSignal) {
-        try {
+      // 1. Verifica se a API de notificações existe (obrigatório estar como app na tela inicial no iOS 16.4+)
+      if (!("Notification" in window)) {
+        alert("No iPhone, abra este app tocando no ícone adicionado à Tela de Início (requer iOS 16.4+).");
+        return;
+      }
+
+      // Se já concedeu autorização anteriormente
+      if (Notification.permission === "granted") {
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function(OneSignal) {
           await OneSignal.User.PushSubscription.optIn();
-          alert("Notificações solicitadas! Se a janela abrir, confirme em Permitir.");
-        } catch (err) {
-          alert("Erro: " + err.message);
+        });
+        alert("Notificações já estão autorizadas!");
+        return;
+      }
+
+      // 2. Dispara a janela nativa do iOS no toque do usuário
+      try {
+        const permissao = await Notification.requestPermission();
+        if (permissao === "granted") {
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          window.OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.User.PushSubscription.optIn();
+          });
+          alert("Notificações ativadas com sucesso!");
+        } else if (permissao === "denied") {
+          alert("Permissão recusada. Acesse Ajustes > Cupons no iPhone para permitir notificações.");
         }
-      } else {
-        alert("O serviço de notificações ainda está carregando, aguarde 3 segundos.");
+      } catch (err) {
+        alert("Erro: " + err.message);
       }
     }
 
@@ -80,7 +102,6 @@
     <p>Ative os alertas para receber cupons novos.</p>
   </header>
 
-  <!-- Este botão é o gatilho exigido pela Apple -->
   <button id="btn-ativar" onclick="ativarNotificacoes()">🔔 Toque aqui para Ativar Notificações</button>
 
   <div class="card">
