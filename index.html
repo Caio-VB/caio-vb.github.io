@@ -107,12 +107,12 @@
       gap: 10px;
     }
 
-    /* Seção de Título */
+    /* Seção de Título com espaçamento ajustado */
     .section-header {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 14px 4px 14px;
+      margin: 36px 4px 14px;
     }
     .section-title { font-size: 15px; font-weight: 700; color: #403024; }
     .badge-count {
@@ -198,7 +198,7 @@
       // Avalia a visibilidade do botão logo após o OneSignal inicializar
       gerenciarVisibilidadeNotificacao();
 
-      // Monitora mudanças no status de inscrição (caso o usuário pause ou desative)
+      // Monitora mudanças no status de inscrição
       OneSignal.User.PushSubscription.addEventListener("change", () => {
         gerenciarVisibilidadeNotificacao();
       });
@@ -229,7 +229,7 @@
       }
     }
 
-    // Reavalia quando o usuário volta para o app (ex: se foi nas configs do Android ligar/desligar notificações)
+    // Reavalia quando o usuário volta para o app
     window.addEventListener('focus', () => {
       gerenciarVisibilidadeNotificacao();
     });
@@ -427,10 +427,9 @@
     window.addEventListener('appinstalled', () => {
       btnInstalar.style.display = 'none';
       bannerDica.innerHTML = `
-        <span>🎉</span>
-        <strong style="color: #16a34a;">App instalado! Abra pelo ícone na tela inicial para receber as promoções.</strong>
+        <strong style="color: #16a34a;">Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações ereceber a sua recompensa.</strong>
       `;
-      alert("🎉 Aplicativo instalado com sucesso!\n\nFeche o navegador e abra direto pelo ícone da Cafeteria na sua tela inicial.");
+      alert("Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações ereceber a sua recompensa.");
     });
 
     function abrirModalIos() {
