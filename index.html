@@ -250,7 +250,7 @@
           await new Promise(r => setTimeout(r, 1500));
 
           if (OneSignal.User.PushSubscription.optedIn) {
-            alert("✅ Notificações ativadas com sucesso!");
+            alert("Notificações ativadas com sucesso. Mostre essa mensagem para o atendente e ganhe a sua recompensa!");
             gerenciarVisibilidadeNotificacao(); // Faz o botão sumir na mesma hora
           } else {
             alert("Permissão registrada! Se for seu primeiro acesso, reinicie o app.");
@@ -428,9 +428,9 @@
     window.addEventListener('appinstalled', () => {
       btnInstalar.style.display = 'none';
       bannerDica.innerHTML = `
-        Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações ereceber a sua recompensa.
+        Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações e receber a sua recompensa.
       `;
-      alert("Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações ereceber a sua recompensa.");
+      alert("Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações e receber a sua recompensa.");
     });
 
     function abrirModalIos() {
