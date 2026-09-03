@@ -178,7 +178,7 @@
     async function buscarPromocoes() {
       const container = document.getElementById('lista-promos');
       try {
-        const res = await fetch(API_URL);
+        const res = await fetch(`${API_URL}?t=${Date.now()}`, { cache: 'no-store' });
         const promocoes = await res.json();
 
         if (!promocoes.length) {
