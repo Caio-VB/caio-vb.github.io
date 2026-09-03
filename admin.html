@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Gerenciar Promoções</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background: #f8fafc; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; }
+    .container { width: 100%; max-width: 460px; }
+    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    h1 { font-size: 18px; margin-bottom: 16px; color: #0f172a; }
+    h2 { font-size: 16px; margin-bottom: 12px; color: #334155; }
+    label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+    input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 14px; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .btn-create { background: #059669; color: white; margin-top: 6px; }
+    .btn-create:disabled { background: #9ca3af; cursor: not-allowed; }
+    .item-promo { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .item-promo:last-child { border-bottom: none; }
+    .btn-delete { background: #ef4444; color: white; padding: 6px 12px; font-size: 12px; width: auto; border-radius: 4px; }
+    .msg { margin-top: 10px; font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h1>📢 Nova Promoção da Loja</h1>
+    
+    <label>Senha de Administrador</label>
+    <input type="password" id="senha" placeholder="Digite sua senha">
+
+    <label>Título da Promoção</label>
+    <input type="text" id="titulo" placeholder="Ex: Café + Pão de Queijo por R$ 12">
+
+    <label>Detalhes da Oferta</label>
+    <input type="text" id="descricao" placeholder="Ex: Válido para consumo no salão das 14h às 17h">
+
+    <label>Validade</label>
+    <input type="text" id="validade" placeholder="Ex: Somente hoje (terça-feira)">
+
+    <button class="btn-create" id="btn-enviar" onclick="cadastrarPromocao()">🚀 Publicar e Disparar Notificação</button>
+    <div id="status" class="msg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Promoções no Ar</h2>
+    <div id="lista-promocoes">Carregando promoções...</div>
+  </div>
+</div>
+
+<script>
+  // COLOQUE AQUI A URL DA SUA FUNÇÃO DO SUPABASE
+  const API_URL = "https://scxskwkcbxfdxswwfbxy.supabase.co/functions/v1/promocoes";
+
+  async function carregarPromocoes() {
+    const lista = document.getElementById('lista-promocoes');
+    try {
+      const res = await fetch(API_URL);
+      const promocoes = await res.json();
+      
+      if (!promocoes.length) {
+        lista.innerHTML = "<p style='color: #64748b; font-size: 13px;'>Nenhuma promoção ativa no momento.</p>";
+        return;
+      }
+
+      lista.innerHTML = promocoes.map(p => `
+        <div class="item-promo">
+          <div>
+            <strong>${p.titulo}</strong><br>
+            <small style="color: #475569;">${p.descricao}</small><br>
+            <small style="color: #059669; font-weight: 600;">⏰ ${p.validade}</small>
+          </div>
+          <button class="btn-delete" onclick="deletarPromocao(${p.id})">Excluir</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      lista.innerHTML = "<p style='color: #ef4444;'>Erro ao carregar lista.</p>";
+    }
+  }
+
+  async function cadastrarPromocao() {
+    const senha = document.getElementById('senha').value;
+    const titulo = document.getElementById('titulo').value;
+    const descricao = document.getElementById('descricao').value;
+    const validade = document.getElementById('validade').value;
+    const btn = document.getElementById('btn-enviar');
+    const status = document.getElementById('status');
+
+    if (!senha || !titulo || !descricao || !validade) {
+      alert('Preencha todos os campos e a senha.');
+      return;
+    }
+
+    btn.disabled = true;
+    status.style.color = "#0284c7";
+    status.innerText = "Salvando promoção e enviando notificação para os celulares...";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ senha, titulo, descricao, validade })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Falha ao cadastrar');
+
+      status.style.color = "#059669";
+      status.innerText = "✅ Promoção publicada e notificação enviada com sucesso!";
+      document.getElementById('titulo').value = '';
+      document.getElementById('descricao').value = '';
+      document.getElementById('validade').value = '';
+      carregarPromocoes();
+    } catch (err) {
+      status.style.color = "#ef4444";
+      status.innerText = "❌ " + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function deletarPromocao(id) {
+    const senha = document.getElementById('senha').value;
+    if (!senha) {
+      alert('Preencha o campo de senha no topo para poder excluir.');
+      return;
+    }
+
+    if (!confirm('Deseja realmente remover esta promoção do aplicativo?')) return;
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, senha })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao excluir');
+      carregarPromocoes();
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  carregarPromocoes();
+</script>
+
+</body>
+</html>
