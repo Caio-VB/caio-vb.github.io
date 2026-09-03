@@ -18,8 +18,11 @@
     .btn-create:disabled { background: #9ca3af; cursor: not-allowed; }
     .item-promo { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
     .item-promo:last-child { border-bottom: none; }
-    .btn-delete { background: #ef4444; color: white; padding: 6px 12px; font-size: 12px; width: auto; border-radius: 4px; }
+    .btn-delete { background: #ef4444; color: white; padding: 8px 14px; font-size: 12px; width: auto; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
+    .btn-delete:disabled { background: #9ca3af; cursor: not-allowed; }
     .msg { margin-top: 10px; font-size: 13px; text-align: center; }
+    .alerta-erro { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .alerta-sucesso { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; display: none; }
   </style>
 </head>
 <body>
@@ -32,13 +35,13 @@
     <input type="password" id="senha" placeholder="Digite sua senha">
 
     <label>Título da Promoção</label>
-    <input type="text" id="titulo" placeholder="Ex: Café + Pão de Queijo por R$ 12">
+    <input type="text" id="titulo" placeholder="Ex: Café + Bolo por R$ 14,00">
 
     <label>Detalhes da Oferta</label>
-    <input type="text" id="descricao" placeholder="Ex: Válido para consumo no salão das 14h às 17h">
+    <input type="text" id="descricao" placeholder="Ex: Válido até 05/09/2026">
 
     <label>Validade</label>
-    <input type="text" id="validade" placeholder="Ex: Somente hoje (terça-feira)">
+    <input type="text" id="validade" placeholder="Ex: Válido até 05/09/2026">
 
     <button class="btn-create" id="btn-enviar" onclick="cadastrarPromocao()">🚀 Publicar e Disparar Notificação</button>
     <div id="status" class="msg"></div>
@@ -46,37 +49,45 @@
 
   <div class="card">
     <h2>Promoções no Ar</h2>
+    
+    <!-- Avisos visuais da lista -->
+    <div id="msg-erro-lista" class="alerta-erro"></div>
+    <div id="msg-sucesso-lista" class="alerta-sucesso"></div>
+
     <div id="lista-promocoes">Carregando promoções...</div>
   </div>
 </div>
 
 <script>
-  // COLOQUE AQUI A URL DA SUA FUNÇÃO DO SUPABASE
   const API_URL = "https://scxskwkcbxfdxswwfbxy.supabase.co/functions/v1/promocoes";
 
+  // Busca sempre limpa, ignorando qualquer cache
   async function carregarPromocoes() {
     const lista = document.getElementById('lista-promocoes');
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(`${API_URL}?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
+      });
       const promocoes = await res.json();
       
-      if (!promocoes.length) {
+      if (!Array.isArray(promocoes) || !promocoes.length) {
         lista.innerHTML = "<p style='color: #64748b; font-size: 13px;'>Nenhuma promoção ativa no momento.</p>";
         return;
       }
 
       lista.innerHTML = promocoes.map(p => `
-        <div class="item-promo">
-          <div>
+        <div class="item-promo" id="promo-${p.id}">
+          <div style="padding-right: 10px;">
             <strong>${p.titulo}</strong><br>
             <small style="color: #475569;">${p.descricao}</small><br>
             <small style="color: #059669; font-weight: 600;">⏰ ${p.validade}</small>
           </div>
-          <button class="btn-delete" onclick="deletarPromocao(${p.id})">Excluir</button>
+          <button class="btn-delete" id="btn-del-${p.id}" onclick="deletarPromocao(${p.id})">Excluir</button>
         </div>
       `).join('');
     } catch (e) {
-      lista.innerHTML = "<p style='color: #ef4444;'>Erro ao carregar lista.</p>";
+      lista.innerHTML = "<p style='color: #ef4444;'>Erro ao carregar lista de promoções.</p>";
     }
   }
 
@@ -88,14 +99,17 @@
     const btn = document.getElementById('btn-enviar');
     const status = document.getElementById('status');
 
+    limparAlertasLista();
+
     if (!senha || !titulo || !descricao || !validade) {
-      alert('Preencha todos os campos e a senha.');
+      status.style.color = "#ef4444";
+      status.innerText = "❌ Preencha todos os campos e a senha.";
       return;
     }
 
     btn.disabled = true;
     status.style.color = "#0284c7";
-    status.innerText = "Salvando promoção e enviando notificação para os celulares...";
+    status.innerText = "Enviando promoção e disparando push...";
 
     try {
       const res = await fetch(API_URL, {
@@ -105,14 +119,16 @@
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Falha ao cadastrar');
+      if (!res.ok) throw new Error(data.error || data.message || 'Falha ao cadastrar');
 
       status.style.color = "#059669";
       status.innerText = "✅ Promoção publicada e notificação enviada com sucesso!";
       document.getElementById('titulo').value = '';
       document.getElementById('descricao').value = '';
       document.getElementById('validade').value = '';
-      carregarPromocoes();
+      
+      // Atualiza a lista na hora
+      await carregarPromocoes();
     } catch (err) {
       status.style.color = "#ef4444";
       status.innerText = "❌ " + err.message;
@@ -123,12 +139,25 @@
 
   async function deletarPromocao(id) {
     const senha = document.getElementById('senha').value;
+    const btnDel = document.getElementById(`btn-del-${id}`);
+    const erroBox = document.getElementById('msg-erro-lista');
+    const sucessoBox = document.getElementById('msg-sucesso-lista');
+
+    limparAlertasLista();
+
     if (!senha) {
-      alert('Preencha o campo de senha no topo para poder excluir.');
+      erroBox.innerText = "❌ Digite a senha no campo 'Senha de Administrador' lá em cima para poder excluir.";
+      erroBox.style.display = 'block';
+      document.getElementById('senha').focus();
       return;
     }
 
     if (!confirm('Deseja realmente remover esta promoção do aplicativo?')) return;
+
+    if (btnDel) {
+      btnDel.disabled = true;
+      btnDel.innerText = "...";
+    }
 
     try {
       const res = await fetch(API_URL, {
@@ -136,12 +165,39 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, senha })
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erro ao excluir');
-      carregarPromocoes();
+      
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Falha ao excluir');
+      }
+
+      // Sucesso: feedback visual e recarrega na hora
+      sucessoBox.innerText = "✅ Promoção removida com sucesso!";
+      sucessoBox.style.display = 'block';
+
+      // Remove da tela imediatamente
+      const elemento = document.getElementById(`promo-${id}`);
+      if (elemento) elemento.remove();
+
+      // Recarrega do banco sem cache
+      await carregarPromocoes();
+
     } catch (err) {
-      alert(err.message);
+      erroBox.innerText = "❌ Erro ao excluir: " + err.message;
+      erroBox.style.display = 'block';
+      if (btnDel) {
+        btnDel.disabled = false;
+        btnDel.innerText = "Excluir";
+      }
     }
+  }
+
+  function limparAlertasLista() {
+    const erro = document.getElementById('msg-erro-lista');
+    const sucesso = document.getElementById('msg-sucesso-lista');
+    if (erro) erro.style.display = 'none';
+    if (sucesso) sucesso.style.display = 'none';
   }
 
   carregarPromocoes();
