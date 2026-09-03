@@ -1,0 +1,15 @@
+{
+  "name": "Admin - Cafeteria",
+  "short_name": "Admin",
+  "start_url": "./admin.html",
+  "display": "standalone",
+  "background_color": "#200d02",
+  "theme_color": "#200d02",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/726/726476.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
