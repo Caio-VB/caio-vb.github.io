@@ -1,13 +1,13 @@
 {
-  "name": "Admin - Cafeteria",
-  "short_name": "Admin",
+  "name": "Admin - Café da Esquina",
+  "short_name": "Admin - Café da Esquina",
   "start_url": "./admin.html",
   "display": "standalone",
   "background_color": "#200d02",
   "theme_color": "#200d02",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/726/726476.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/924/924514.png",
       "sizes": "512x512",
       "type": "image/png"
     }

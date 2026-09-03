@@ -1,13 +1,13 @@
 {
-  "name": "Cupons da Loja",
-  "short_name": "Cupons",
+  "name": "Café da Esquina",
+  "short_name": "Café da Esquina",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/726/726476.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/924/924514.png",
       "sizes": "512x512",
       "type": "image/png"
     }
