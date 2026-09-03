@@ -96,32 +96,28 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function(OneSignal) {
             try {
-            // 1. Se o usuário bloqueou nas configurações do próprio aparelho/navegador
-            if ("Notification" in window && Notification.permission === "denied") {
-                alert("As notificações estão bloqueadas no seu navegador. Vá em Ajustes/Configurações do aparelho e permita as notificações deste app.");
-                return;
-            }
-
-            // 2. Solicita permissão nativa do sistema
+            // 1. Pede permissão nativa
             await OneSignal.Notifications.requestPermission();
 
-            // 3. Registra e ativa o aparelho de forma limpa
+            // 2. Força o opt-in direto
             await OneSignal.User.PushSubscription.optIn();
 
-            // Pequena pausa de 1 segundo para o OneSignal sincronizar com o servidor
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Aguarda 1.5s para o OneSignal sincronizar com os servidores
+            await new Promise(r => setTimeout(r, 1500));
 
-            const ativo = OneSignal.User.PushSubscription.optedIn;
-            const subId = OneSignal.User.PushSubscription.id;
-
-            if (ativo && subId) {
-                alert("✅ Aparelho cadastrado e ATIVO para receber promoções!");
+            const sub = OneSignal.User.PushSubscription;
+            
+            // Diagnóstico na tela
+            if (sub.optedIn && sub.id) {
+                alert("✅ Conectado com sucesso!\nID do Aparelho: " + sub.id.substring(0, 8) + "...");
             } else {
-                alert("⚠️ Permissão concedida! Se for seu primeiro acesso, atualize a página para concluir a sincronização.");
+                // Se ainda não ativou, força a chamada do evento de permissão
+                await OneSignal.User.PushSubscription.optIn();
+                alert("Status: " + (sub.optedIn ? "Ativo" : "Pendente de sincronização") + "\nRecarregue a página uma vez.");
             }
 
             } catch (e) {
-            alert("Erro ao ativar notificações: " + e.message);
+            alert("Erro ao registrar: " + e.message);
             } finally {
             if (btn) btn.disabled = false;
             }
