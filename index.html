@@ -17,6 +17,17 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f6f3ee; color: #1e140d; min-height: 100vh; padding-bottom: 40px; }
 
+    /* Bloqueio de pop-ups automáticos injetados pelo OneSignal */
+    #onesignal-slidedown-container,
+    .onesignal-slidedown-container,
+    #onesignal-bell-container,
+    .onesignal-bell-container {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
     /* Top Bar Café Degrade */
     .top-header {
       background: linear-gradient(180deg, #3d1c06 0%, #200d02 100%);
@@ -64,7 +75,7 @@
     }
     .btn-action:active { opacity: 0.9; transform: scale(0.98); }
 
-    /* Botão de Instalação (Branco com borda e sombra) */
+    /* Botão de Instalação */
     #btn-instalar-app {
       background: #ffffff;
       color: #200d02;
@@ -72,16 +83,16 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     }
 
-    /* Botão de Notificações (Terracota) */
+    /* Botão de Notificações */
     #btn-ativar {
-      display: none; /* Só aparece no app instalado ou após instalar */
+      display: none;
       background: linear-gradient(135deg, #a0461b 0%, #8c3b12 100%);
       color: #ffffff;
       box-shadow: 0 4px 12px rgba(140, 59, 18, 0.25);
     }
     #btn-ativar:disabled { background: #b8aba0; cursor: not-allowed; box-shadow: none; }
 
-    /* Banner informativo para navegador */
+    /* Banner explicativo no navegador comum */
     .banner-install-info {
       background: #fdfaf6;
       border: 1px dashed #d5c8bb;
@@ -155,7 +166,7 @@
 
     .loading-box { text-align: center; color: #8c7e73; font-size: 13px; padding: 30px 10px; }
 
-    /* Modais */
+    /* Modal Tutorial iPhone */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
     .sheet-box { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-radius: 24px 24px 0 0; padding: 26px 20px 32px; max-width: 460px; margin: 0 auto; z-index: 1000; transform: translateY(100%); transition: transform 0.3s ease-out; }
     .sheet-box.active { transform: translateY(0); }
@@ -179,13 +190,48 @@
         }
       });
 
-      // Se aberto dentro do App Instalado e já tiver permissão concedida
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       if (isStandalone && Notification.permission === "granted") {
         await OneSignal.User.PushSubscription.optIn();
-        const btn = document.getElementById('btn-ativar');
-        if (btn) btn.innerText = "🔔 Notificações Ativadas";
       }
+
+      // Avalia a visibilidade do botão logo após o OneSignal inicializar
+      gerenciarVisibilidadeNotificacao();
+
+      // Monitora mudanças no status de inscrição (caso o usuário pause ou desative)
+      OneSignal.User.PushSubscription.addEventListener("change", () => {
+        gerenciarVisibilidadeNotificacao();
+      });
+    });
+
+    // Função que decide se o botão de notificações deve aparecer ou sumir
+    function gerenciarVisibilidadeNotificacao() {
+      const btn = document.getElementById('btn-ativar');
+      if (!btn) return;
+
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      
+      // Se não for app instalado na tela inicial, o botão nunca aparece
+      if (!isStandalone) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      const permissaoConcedida = ("Notification" in window) && Notification.permission === "granted";
+      const estaInscrito = window.OneSignal?.User?.PushSubscription?.optedIn ?? false;
+
+      // Se já permitiu e está devidamente inscrito, o botão some
+      if (permissaoConcedida && estaInscrito) {
+        btn.style.display = 'none';
+      } else {
+        // Se ainda não ativou ou se desativou nas opções do sistema, ele reaparece
+        btn.style.display = 'flex';
+      }
+    }
+
+    // Reavalia quando o usuário volta para o app (ex: se foi nas configs do Android ligar/desligar notificações)
+    window.addEventListener('focus', () => {
+      gerenciarVisibilidadeNotificacao();
     });
 
     async function ativarNotificacoes() {
@@ -196,22 +242,19 @@
       window.OneSignalDeferred.push(async function(OneSignal) {
         try {
           if ("Notification" in window && Notification.permission === "denied") {
-            alert("As notificações estão bloqueadas nas permissões do celular.\n\nVá em: Configurações do Celular > Aplicativos > Cafeteria > Notificações e ative o botão.");
+            alert("As notificações estão bloqueadas no aparelho.\n\nVá em: Configurações do Celular > Aplicativos > Cafeteria > Notificações e ative a permissão.");
             return;
           }
 
-          // 1. Solicita permissão nativa (no WebAPK abre a janela oficial do Android 13+)
           await OneSignal.Notifications.requestPermission();
-
-          // 2. Registra o aparelho no OneSignal
           await OneSignal.User.PushSubscription.optIn();
           await new Promise(r => setTimeout(r, 1500));
 
           if (OneSignal.User.PushSubscription.optedIn) {
-            alert("✅ Notificações ativadas com sucesso!\nVocê receberá nossas promoções em primeira mão.");
-            if (btn) btn.innerText = "🔔 Notificações Ativadas";
+            alert("✅ Notificações ativadas com sucesso!");
+            gerenciarVisibilidadeNotificacao(); // Faz o botão sumir na mesma hora
           } else {
-            alert("Permissão registrada! Se for seu primeiro acesso, feche e abra o aplicativo novamente.");
+            alert("Permissão registrada! Se for seu primeiro acesso, reinicie o app.");
           }
         } catch (e) {
           alert("Erro ao registrar notificações: " + e.message);
@@ -237,7 +280,7 @@
 
   <div class="container">
     
-    <!-- Botão de Instalação (Exibido apenas quando aberto no navegador comum) -->
+    <!-- Botão de Instalação (Exibido apenas fora do app instalado) -->
     <button id="btn-instalar-app" class="btn-action" onclick="iniciarInstalacao()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       Instalar Aplicativo no Celular
@@ -249,10 +292,10 @@
       <span>Instale o aplicativo no seu aparelho para receber as nossas promoções em primeira mão.</span>
     </div>
 
-    <!-- Botão de Notificações (Prioritário dentro do App instalado) -->
+    <!-- Botão de Notificações (Só visível se o app estiver instalado E notificações não estiverem ativas) -->
     <button id="btn-ativar" class="btn-action" onclick="ativarNotificacoes()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-      Ativar Avisos de Promoções
+      Receber Avisos de Promoções
     </button>
 
     <!-- Cabeçalho da Lista -->
@@ -268,7 +311,7 @@
 
   </div>
 
-  <!-- Modal Tutorial iPhone (Exclusivo iOS com ícones no tom do app) -->
+  <!-- Modal Tutorial iPhone -->
   <div class="modal-overlay" id="iosOverlay" onclick="fecharModalIos()"></div>
   <div class="sheet-box" id="iosSheet">
     <div class="sheet-title">Instalar no seu iPhone</div>
@@ -347,26 +390,19 @@
 
     buscarPromocoes();
 
-    // ============================================
-    // CONTROLE DO FLUXO PWA: BROWSER VS APP INSTALADO
-    // ============================================
+    // Controles de PWA
     const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     
     const btnInstalar = document.getElementById('btn-instalar-app');
-    const btnAtivar = document.getElementById('btn-ativar');
     const bannerDica = document.getElementById('banner-dica-install');
 
     if (isStandalone) {
-      // Aberto dentro do aplicativo instalado na tela inicial:
       btnInstalar.style.display = 'none';
       bannerDica.style.display = 'none';
-      btnAtivar.style.display = 'flex'; // Exibe o botão de notificação nativo
     } else {
-      // Aberto no navegador (Safari / Chrome):
       btnInstalar.style.display = 'flex';
       bannerDica.style.display = 'flex';
-      btnAtivar.style.display = 'none'; // Esconde para não causar conflito de WebAPK
     }
 
     let deferredPrompt = null;
@@ -388,14 +424,13 @@
       }
     }
 
-    // Evento disparado pelo sistema quando a instalação no Android termina
     window.addEventListener('appinstalled', () => {
       btnInstalar.style.display = 'none';
       bannerDica.innerHTML = `
         <span>🎉</span>
-        <strong style="color: #16a34a;">App instalado! Feche esta página e abra o ícone da Cafeteria na sua tela inicial para ativar seus avisos.</strong>
+        <strong style="color: #16a34a;">App instalado! Abra pelo ícone na tela inicial para receber as promoções.</strong>
       `;
-      alert("🎉 Aplicativo instalado com sucesso!\n\nAgora feche o navegador e abra o app direto pelo ícone da Cafeteria na sua tela inicial.");
+      alert("🎉 Aplicativo instalado com sucesso!\n\nFeche o navegador e abra direto pelo ícone da Cafeteria na sua tela inicial.");
     });
 
     function abrirModalIos() {
