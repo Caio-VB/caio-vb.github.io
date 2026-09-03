@@ -90,16 +90,38 @@
     });
 
     async function ativarNotificacoes() {
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async function(OneSignal) {
-        try {
-          await OneSignal.Notifications.requestPermission();
-          await OneSignal.User.PushSubscription.optIn();
-          alert("Notificações ativadas com sucesso!");
-        } catch (e) {
-          alert("Erro ao ativar: " + e.message);
-        }
-      });
+        const btn = document.getElementById('btn-ativar');
+        if (btn) btn.disabled = true;
+
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function(OneSignal) {
+            try {
+            // 1. Garante que desinscreveu no servidor antes de qualquer coisa
+            try {
+                await OneSignal.User.PushSubscription.optOut();
+            } catch (errOptOut) {
+                // Se ainda não existia inscrição prévia, ignora e prossegue
+            }
+
+            // 2. Se o cliente bloqueou nas configurações do próprio aparelho
+            if ("Notification" in window && Notification.permission === "denied") {
+                alert("As notificações estão bloqueadas no seu sistema. Vá em Ajustes/Configurações do aparelho para permitir o envio.");
+                return;
+            }
+
+            // 3. Solicita a permissão do sistema operacional / navegador
+            await OneSignal.Notifications.requestPermission();
+
+            // 4. Com a desinscrição concluída e a permissão concedida, faz o novo registro limpo
+            await OneSignal.User.PushSubscription.optIn();
+
+            alert("Inscrição renovada com sucesso!");
+            } catch (e) {
+            alert("Erro ao sincronizar notificações: " + e.message);
+            } finally {
+            if (btn) btn.disabled = false;
+            }
+        });
     }
   </script>
 </head>
