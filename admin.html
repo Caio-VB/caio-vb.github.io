@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Admin - Gerenciar Promoções</title>
 
-  <!-- PWA Tags para instalar o Admin como App separado -->
+  <!-- PWA Tags para o painel de Admin -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Admin">
@@ -23,7 +23,6 @@
       padding: 22px 20px 28px 20px;
       border-radius: 0 0 24px 24px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 18px rgba(32, 13, 2, 0.25);
     }
@@ -42,40 +41,10 @@
     }
     .header-title { font-size: 17px; font-weight: 700; color: #ffffff; line-height: 1.2; }
     .header-sub { font-size: 12px; color: #d6bda8; margin-top: 2px; }
-    
-    .btn-notif {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      cursor: pointer;
-    }
-    .badge-notif {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      background: #e11d48;
-      color: white;
-      font-size: 10px;
-      font-weight: 800;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #291103;
-    }
 
-    /* Layout Content */
     .container { max-width: 460px; margin: -10px auto 0; padding: 0 16px; }
 
-    /* Botão de Instalação do Painel */
+    /* Botão Instalação */
     .btn-install-panel {
       width: 100%;
       background: #ffffff;
@@ -106,12 +75,7 @@
       box-shadow: 0 3px 12px rgba(45, 24, 8, 0.03);
     }
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
     .card-icon-box {
       width: 38px;
       height: 38px;
@@ -127,7 +91,7 @@
     .card-title-group h2 { font-size: 16px; font-weight: 700; color: #1f140e; }
     .card-title-group p { font-size: 12px; color: #786b62; margin-top: 1px; }
 
-    /* Formulário */
+    /* Formulários */
     .form-group { margin-bottom: 14px; position: relative; }
     .form-label {
       display: flex;
@@ -166,11 +130,15 @@
       align-items: center;
     }
 
-    /* Imagem Picker */
-    .img-picker-row { display: flex; align-items: center; gap: 12px; }
+    /* Seletor Nativo Câmera/Galeria */
+    .img-upload-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .img-preview-box {
-      width: 46px;
-      height: 46px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       border: 2px dashed #d5c8bb;
       background: #fdfbf9;
@@ -179,10 +147,42 @@
       justify-content: center;
       overflow: hidden;
       flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
     }
-    .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+    #preview-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+    .img-preview-box img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+    }
+    
+    .btn-select-file {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px dashed #c4b5a5;
+      background: #faf7f2;
+      border-radius: 10px;
+      color: #735d4f;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-select-file:active { background: #ede3d7; }
 
-    /* Botão Salvar */
+    /* Botão Publicar */
     .btn-submit {
       width: 100%;
       background: linear-gradient(135deg, #a0461b 0%, #8c3b12 100%);
@@ -284,7 +284,7 @@
       font-size: 13px;
       flex-shrink: 0;
     }
-    .tip-text { font-size: 11px; color: #6d5b4f; line-height: 1.35; font-weight: 500; }
+    .tip-text { font-size: 11px; color: #6d5b4f; line-height: 1.35; font-weight: 500; margin-left: 10px; }
     .tip-coffee { font-size: 24px; flex-shrink: 0; }
 
     /* Barra Inferior */
@@ -340,21 +340,14 @@
         <div class="header-sub">Painel Administrativo</div>
       </div>
     </div>
-    <div class="btn-notif">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-      </svg>
-      <div class="badge-notif" id="badge-total">0</div>
-    </div>
   </header>
 
   <div class="container">
     
-    <!-- Botão de Instalar Painel Admin (Oculta quando já instalado) -->
+    <!-- Botão de Instalar Painel Admin -->
     <button id="btn-instalar-admin" class="btn-install-panel" onclick="iniciarInstalacaoAdmin()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      📲 Instalar Painel no Celular
+      Instalar Painel no Celular
     </button>
 
     <!-- Card 1: Nova Promoção -->
@@ -408,18 +401,29 @@
         <input type="text" id="validade" class="input-field" placeholder="Ex: Válido até 05/09/2026">
       </div>
 
-      <!-- Foto da Oferta -->
+      <!-- Foto: Câmera ou Galeria -->
       <div class="form-group">
         <label class="form-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          Foto da Oferta (Link da Imagem)
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          Foto da Oferta (Câmera ou Galeria)
         </label>
-        <div class="img-picker-row">
-          <div class="img-preview-box" id="preview-box">
-            <span id="preview-placeholder" style="font-size: 16px;">☕</span>
+        
+        <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="processarArquivoFoto(event)">
+
+        <div class="img-upload-container">
+          <div class="img-preview-box" onclick="abrirSeletorFoto()" title="Clique para escolher foto">
+            <div id="preview-placeholder">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
             <img id="img-preview" style="display:none;" alt="Preview">
           </div>
-          <input type="url" id="imagem_url" class="input-field" placeholder="Cole o link da foto (ou deixe vazio)" oninput="atualizarPreview()">
+          <button type="button" class="btn-select-file" id="btn-label-foto" onclick="abrirSeletorFoto()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Tirar Foto ou Escolher Galeria
+          </button>
         </div>
       </div>
 
@@ -451,8 +455,7 @@
       <!-- Banner Dica -->
       <div class="tip-box">
         <div class="tip-left">
-          <div class="tip-icon">📊</div>
-          <div class="tip-text">Dica: promoções ativas aparecem no aplicativo dos clientes em tempo real!</div>
+          <div class="tip-text">Dica: promoções ativas aparecem no aplicativo dos clientes e dirparam notificações em tempo real!</div>
         </div>
         <div class="tip-coffee">☕</div>
       </div>
@@ -476,142 +479,116 @@
     </div>
   </nav>
 
-  <!-- Modal Tutorial iPhone (iOS) -->
+  <!-- Modais PWA -->
   <div class="modal-overlay" id="iosOverlay" onclick="fecharModalIos()"></div>
   <div class="sheet-box" id="iosSheet">
     <div class="sheet-title">Instalar Painel no iPhone</div>
     <div class="sheet-sub">Adicione o painel do lojista à Tela de Início:</div>
-
     <div class="step-item">
       <div class="step-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-          <polyline points="16 6 12 2 8 6"/>
-          <line x1="12" y1="2" x2="12" y2="15"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
       </div>
       <div class="step-text">1. Na barra inferior do Safari, toque no botão <strong>Compartilhar</strong>.</div>
     </div>
-
     <div class="step-item">
       <div class="step-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
       </div>
       <div class="step-text">2. Role para baixo e toque em <strong>Adicionar à Tela de Início</strong>.</div>
     </div>
-
     <button class="btn-fechar-sheet" onclick="fecharModalIos()">Entendido</button>
   </div>
 
-  <!-- Modal Tutorial Android -->
   <div class="modal-overlay" id="androidOverlay" onclick="fecharModalAndroid()"></div>
   <div class="sheet-box" id="androidSheet">
     <div class="sheet-title">Instalar Painel no Android</div>
     <div class="sheet-sub">Adicione o atalho administrativo à sua tela:</div>
-
     <div class="step-item">
       <div class="step-icon">⋮</div>
       <div class="step-text">1. Toque nos <strong>3 pontinhos</strong> no canto superior do Chrome.</div>
     </div>
-
     <div class="step-item">
       <div class="step-icon">📲</div>
       <div class="step-text">2. Escolha <strong>Instalar aplicativo</strong> ou <strong>Adicionar à tela inicial</strong>.</div>
     </div>
-
     <button class="btn-fechar-sheet" onclick="fecharModalAndroid()">Entendido</button>
   </div>
 
   <script>
     const API_URL = "https://scxskwkcbxfdxswwfbxy.supabase.co/functions/v1/promocoes";
     const FOTO_PADRAO = "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=150&q=80";
+    
+    let fotoBase64 = null;
 
-    // ============================================
-    // CONTROLES DE INSTALAÇÃO DO ADMIN (PWA)
-    // ============================================
-    const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    const btnInstalarAdmin = document.getElementById('btn-instalar-admin');
-
-    // Se o lojista já abriu através do atalho instalado, esconde o botão
-    if (isStandalone) {
-      btnInstalarAdmin.style.display = 'none';
+    function abrirSeletorFoto() {
+      document.getElementById('foto-input').click();
     }
 
-    let deferredPromptAdmin = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPromptAdmin = e;
-    });
+    async function processarArquivoFoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-    function iniciarInstalacaoAdmin() {
-      if (isIos()) {
-        abrirModalIos();
-      } else if (deferredPromptAdmin) {
-        deferredPromptAdmin.prompt();
-        deferredPromptAdmin.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            btnInstalarAdmin.style.display = 'none';
-          }
-          deferredPromptAdmin = null;
-        });
-      } else {
-        abrirModalAndroid();
+      const imgPreview = document.getElementById('img-preview');
+      const placeholder = document.getElementById('preview-placeholder');
+      const btnLabel = document.getElementById('btn-label-foto');
+
+      btnLabel.innerText = "Processando foto...";
+
+      try {
+        fotoBase64 = await comprimirImagemParaBase64(file, 900, 0.78);
+        imgPreview.src = fotoBase64;
+        imgPreview.style.display = 'block';
+        placeholder.style.display = 'none';
+        btnLabel.innerText = "✅ Foto pronta (Trocar)";
+      } catch (err) {
+        alert("Erro ao processar imagem: " + err.message);
+        btnLabel.innerText = "Tirar Foto ou Escolher Galeria";
       }
     }
 
-    function abrirModalIos() {
-      document.getElementById('iosOverlay').style.display = 'block';
-      setTimeout(() => document.getElementById('iosSheet').classList.add('active'), 10);
-    }
-    function fecharModalIos() {
-      document.getElementById('iosSheet').classList.remove('active');
-      setTimeout(() => document.getElementById('iosOverlay').style.display = 'none', 300);
+    function comprimirImagemParaBase64(file, maxDimensao, qualidade) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let { width, height } = img;
+
+            if (width > height) {
+              if (width > maxDimensao) {
+                height = Math.round((height * maxDimensao) / width);
+                width = maxDimensao;
+              }
+            } else {
+              if (height > maxDimensao) {
+                width = Math.round((width * maxDimensao) / height);
+                height = maxDimensao;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL('image/jpeg', qualidade));
+          };
+          img.onerror = reject;
+        };
+        reader.onerror = reject;
+      });
     }
 
-    function abrirModalAndroid() {
-      document.getElementById('androidOverlay').style.display = 'block';
-      setTimeout(() => document.getElementById('androidSheet').classList.add('active'), 10);
-    }
-    function fecharModalAndroid() {
-      document.getElementById('androidSheet').classList.remove('active');
-      setTimeout(() => document.getElementById('androidOverlay').style.display = 'none', 300);
-    }
-
-    // ============================================
-    // FUNÇÕES DO PAINEL
-    // ============================================
     function toggleSenha() {
       const input = document.getElementById('senha');
       input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    function atualizarPreview() {
-      const url = document.getElementById('imagem_url').value.trim();
-      const img = document.getElementById('img-preview');
-      const placeholder = document.getElementById('preview-placeholder');
-
-      if (url) {
-        img.src = url;
-        img.style.display = 'block';
-        placeholder.style.display = 'none';
-        img.onerror = () => {
-          img.style.display = 'none';
-          placeholder.style.display = 'block';
-        };
-      } else {
-        img.style.display = 'none';
-        placeholder.style.display = 'block';
-      }
-    }
-
     async function carregarPromocoes() {
       const lista = document.getElementById('lista-promocoes');
-      const badge = document.getElementById('badge-total');
 
       try {
         const res = await fetch(`${API_URL}?t=${Date.now()}`);
@@ -620,8 +597,6 @@
         if (!res.ok || !Array.isArray(promocoes)) {
           throw new Error(promocoes.error || 'Erro ao carregar banco');
         }
-
-        badge.innerText = promocoes.length;
 
         if (!promocoes.length) {
           lista.innerHTML = "<p style='color: #8c7e73; font-size: 13px; text-align: center; padding: 16px 0;'>Nenhuma promoção ativa no momento.</p>";
@@ -655,7 +630,6 @@
       const titulo = document.getElementById('titulo').value;
       const descricao = document.getElementById('descricao').value;
       const validade = document.getElementById('validade').value;
-      let imagem_url = document.getElementById('imagem_url').value.trim();
       const btn = document.getElementById('btn-enviar');
       const status = document.getElementById('status');
 
@@ -668,20 +642,22 @@
         return;
       }
 
-      if (!imagem_url) {
-        imagem_url = FOTO_PADRAO;
-      }
-
       btn.disabled = true;
       status.style.display = "block";
       status.style.color = "#a0461b";
-      status.innerText = "Publicando promoção e notificando clientes...";
+      status.innerText = "Enviando foto para o Storage e notificando clientes...";
 
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ senha, titulo, descricao, validade, imagem_url })
+          body: JSON.stringify({ 
+            senha, 
+            titulo, 
+            descricao, 
+            validade, 
+            imagem_base64: fotoBase64 
+          })
         });
 
         const data = await res.json();
@@ -693,8 +669,12 @@
         document.getElementById('titulo').value = '';
         document.getElementById('descricao').value = '';
         document.getElementById('validade').value = '';
-        document.getElementById('imagem_url').value = '';
-        atualizarPreview();
+        document.getElementById('foto-input').value = '';
+        fotoBase64 = null;
+        
+        document.getElementById('img-preview').style.display = 'none';
+        document.getElementById('preview-placeholder').style.display = 'flex';
+        document.getElementById('btn-label-foto').innerText = "Tirar Foto ou Escolher Galeria";
         
         await carregarPromocoes();
       } catch (err) {
@@ -757,6 +737,54 @@
     function limparAlertasLista() {
       document.getElementById('msg-erro-lista').style.display = 'none';
       document.getElementById('msg-sucesso-lista').style.display = 'none';
+    }
+
+    // PWA Admin Controls
+    const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const btnInstalarAdmin = document.getElementById('btn-instalar-admin');
+
+    if (isStandalone) {
+      btnInstalarAdmin.style.display = 'none';
+    }
+
+    let deferredPromptAdmin = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPromptAdmin = e;
+    });
+
+    function iniciarInstalacaoAdmin() {
+      if (isIos()) {
+        abrirModalIos();
+      } else if (deferredPromptAdmin) {
+        deferredPromptAdmin.prompt();
+        deferredPromptAdmin.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            btnInstalarAdmin.style.display = 'none';
+          }
+          deferredPromptAdmin = null;
+        });
+      } else {
+        abrirModalAndroid();
+      }
+    }
+
+    function abrirModalIos() {
+      document.getElementById('iosOverlay').style.display = 'block';
+      setTimeout(() => document.getElementById('iosSheet').classList.add('active'), 10);
+    }
+    function fecharModalIos() {
+      document.getElementById('iosSheet').classList.remove('active');
+      setTimeout(() => document.getElementById('iosOverlay').style.display = 'none', 300);
+    }
+    function abrirModalAndroid() {
+      document.getElementById('androidOverlay').style.display = 'block';
+      setTimeout(() => document.getElementById('androidSheet').classList.add('active'), 10);
+    }
+    function fecharModalAndroid() {
+      document.getElementById('androidSheet').classList.remove('active');
+      setTimeout(() => document.getElementById('androidOverlay').style.display = 'none', 300);
     }
 
     carregarPromocoes();
