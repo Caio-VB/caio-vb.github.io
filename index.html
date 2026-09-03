@@ -4,65 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cupons da Loja</title>
+
+  <!-- Tags obrigatórias para o PWA no iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Cupons">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/726/726476.png">
   <link rel="manifest" href="manifest.json">
+
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f3f4f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    header { text-align: center; margin-bottom: 24px; }
+    header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 360px; }
     h1 { font-size: 20px; color: #111827; }
     p { font-size: 14px; color: #6b7280; }
+
+    /* Botão obrigatório para o iOS autorizar */
+    #btn-ativar {
+      width: 100%;
+      max-width: 360px;
+      background: #059669;
+      color: white;
+      font-weight: bold;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-size: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
     .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; width: 100%; max-width: 360px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 4px solid #10b981; }
     .card-title { font-weight: bold; color: #111827; font-size: 16px; }
     .card-desc { font-size: 13px; color: #4b5563; margin: 4px 0 12px; }
     .coupon-box { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 6px; padding: 8px 12px; }
     .code { font-weight: 700; color: #047857; letter-spacing: 1px; }
-    button { background: #111827; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-    button:hover { background: #374151; }
+    .btn-copiar { background: #111827; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
   </style>
 
+  <!-- OneSignal SDK -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
+  <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-            appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1",
-            serviceWorkerPath: "OneSignalSDKWorker.js",
-            serviceWorkerParam: { scope: "/meus-cupons/" } // troque pelo nome exato do seu repo
-        });
+      await OneSignal.init({
+        appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1",
+      });
     });
-    </script>
-</head>
-<body>
 
-  <header>
-    <h1>Cupons Exclusivos</h1>
-    <p>Ative as notificações para receber os novos cupons.</p>
-  </header>
+    // Função disparada exclusivamente pelo toque do usuário
+    async function ativarNotificacoes() {
+      if (window.OneSignal) {
+        try {
+          await OneSignal.User.PushSubscription.optIn();
+          alert("Notificações solicitadas! Se a janela abrir, confirme em Permitir.");
+        } catch (err) {
+          alert("Erro: " + err.message);
+        }
+      } else {
+        alert("O serviço de notificações ainda está carregando, aguarde 3 segundos.");
+      }
+    }
 
-  <div class="card">
-    <div class="card-title">15% de Desconto na Primeira Compra</div>
-    <div class="card-desc">Válido para todo o catálogo do site ou loja física.</div>
-    <div class="coupon-box">
-      <span class="code" id="code1">PRIMEIRA15</span>
-      <button onclick="copiar('PRIMEIRA15')">Copiar</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Frete Grátis Acima de R$ 99</div>
-    <div class="card-desc">Aproveite enquanto durarem os estoques.</div>
-    <div class="coupon-box">
-      <span class="code" id="code2">FRETEOFF</span>
-      <button onclick="copiar('FRETEOFF')">Copiar</button>
-    </div>
-  </div>
-
-  <script>
     function copiar(codigo) {
       navigator.clipboard.writeText(codigo);
       alert('Cupom copiado: ' + codigo);
     }
   </script>
+</head>
+<body>
+
+  <header>
+    <h1>Cupons Exclusivos</h1>
+    <p>Ative os alertas para receber cupons novos.</p>
+  </header>
+
+  <!-- Este botão é o gatilho exigido pela Apple -->
+  <button id="btn-ativar" onclick="ativarNotificacoes()">🔔 Toque aqui para Ativar Notificações</button>
+
+  <div class="card">
+    <div class="card-title">15% de Desconto na Primeira Compra</div>
+    <div class="card-desc">Válido para todo o catálogo.</div>
+    <div class="coupon-box">
+      <span class="code">PRIMEIRA15</span>
+      <button class="btn-copiar" onclick="copiar('PRIMEIRA15')">Copiar</button>
+    </div>
+  </div>
+
 </body>
 </html>
