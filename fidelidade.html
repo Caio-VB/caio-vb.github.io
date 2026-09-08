@@ -253,13 +253,14 @@
         formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
         qrbox: (viewfinderWidth, viewfinderHeight) => {
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-          // Reduzimos o alvo para 60%. O cliente vai afastar o celular instintivamente para a nota caber aqui, resolvendo o desfoque!
-          return { width: minEdge * 0.60, height: minEdge * 0.60 };
+          // Voltamos para um tamanho confortável na tela
+          return { width: minEdge * 0.75, height: minEdge * 0.75 };
         }
       };
 
+      // A MÁGICA AQUI: Trocamos "environment" (traseira) por "user" (frontal)
       html5QrcodeScanner.start(
-        { facingMode: "environment" }, 
+        { facingMode: "user" }, 
         config,
         (decodedText) => { pararScanner(); processarNotaFiscal(decodedText); }, 
         (error) => {} 
