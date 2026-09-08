@@ -248,16 +248,27 @@
       html5QrcodeScanner = new Html5Qrcode("reader");
       
       const config = {
-        fps: 10,
+        fps: 15, // Deixa a leitura um pouco mais rápida (15 quadros por segundo)
         aspectRatio: 1.0, 
+        // O SEGREDO 1: Manda a biblioteca ignorar código de barras normais e focar SÓ em QR Code
+        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
         qrbox: (viewfinderWidth, viewfinderHeight) => {
+          // Aumenta a área de leitura para 85% da tela, facilitando enquadrar a nota
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-          return { width: minEdge * 0.75, height: minEdge * 0.75 };
+          return { width: minEdge * 0.85, height: minEdge * 0.85 };
         }
       };
 
+      // O SEGREDO 2: Força o navegador a abrir a lente em HD (720p ou 1080p) e ativa o foco contínuo
+      const cameraConstraints = {
+        facingMode: "environment",
+        width: { min: 640, ideal: 1280, max: 1920 },
+        height: { min: 480, ideal: 720, max: 1080 },
+        advanced: [{ focusMode: "continuous" }]
+      };
+
       html5QrcodeScanner.start(
-        { facingMode: "environment" }, 
+        cameraConstraints, 
         config,
         (decodedText) => { pararScanner(); processarNotaFiscal(decodedText); }, 
         (error) => {} 
@@ -266,7 +277,7 @@
         pararScanner(); 
       });
     }
-
+    
     function pararScanner() {
       if (html5QrcodeScanner) {
         html5QrcodeScanner.stop().then(() => {
