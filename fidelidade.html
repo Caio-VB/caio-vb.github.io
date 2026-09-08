@@ -249,15 +249,15 @@
       
       const config = {
         fps: 15,
-        aspectRatio: 1.0, // Junto com o CSS, garante que a imagem não fique esticada
-        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], // Foca o processamento 100% em QR Code
+        aspectRatio: 1.0, 
+        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
         qrbox: (viewfinderWidth, viewfinderHeight) => {
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-          return { width: minEdge * 0.85, height: minEdge * 0.85 };
+          // Reduzimos o alvo para 60%. O cliente vai afastar o celular instintivamente para a nota caber aqui, resolvendo o desfoque!
+          return { width: minEdge * 0.60, height: minEdge * 0.60 };
         }
       };
 
-      // Pede a câmera traseira de forma simples, sem forçar resolução
       html5QrcodeScanner.start(
         { facingMode: "environment" }, 
         config,
