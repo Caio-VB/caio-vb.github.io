@@ -255,15 +255,16 @@
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
           return { width: minEdge * 0.85, height: minEdge * 0.85 };
         },
-        // O SEGREDO ESTÁ AQUI: As resoluções entram dentro do config
+        // O SEGREDO 2.0: Colocamos a instrução da câmera traseira aqui dentro também!
         videoConstraints: {
+          facingMode: "environment", 
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
       };
 
       html5QrcodeScanner.start(
-        { facingMode: "environment" }, // O primeiro parâmetro volta a ter APENAS 1 chave!
+        { facingMode: "environment" }, // Mantido aqui apenas porque a biblioteca exige
         config,
         (decodedText) => { pararScanner(); processarNotaFiscal(decodedText); }, 
         (error) => {} 
