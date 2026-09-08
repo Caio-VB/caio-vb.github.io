@@ -56,7 +56,7 @@
     .alert-text { font-size: 12px; color: #92400e; line-height: 1.4; }
     .alert-text button { background: none; border: none; color: #b45309; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 4px; font-size: 12px; }
     
-    /* Scanner Otimizado */
+    /* Scanner Otimizado (Câmera Frontal) */
     #reader-container { display: none; margin-top: 16px; border-radius: 16px; overflow: hidden; border: 2px solid #9a431a; background: #000; }
     #reader { width: 100%; border: none; }
     #reader video { object-fit: cover !important; width: 100% !important; border-radius: 14px !important; }
@@ -109,8 +109,8 @@
     <div id="alerta-vincular" class="alert-box">
       <div class="alert-icon">⚠️</div>
       <div class="alert-text">
-        Seus pontos estão salvos apenas neste aparelho. Se você formatar o celular, perderá seu saldo.
-        <br><button onclick="vincularTelefone()">Vincular meu WhatsApp para proteger</button>
+        Seus pontos estão salvos apenas neste aparelho. Proteja seu saldo cadastrando seu CPF.
+        <br><button onclick="vincularCpf()">Vincular meu CPF</button>
       </div>
     </div>
 
@@ -133,7 +133,7 @@
 
     <div class="section-title">Troque seus pontos</div>
     
-    <!-- Lista de Prêmios com o Novo Design -->
+    <!-- Lista de Prêmios -->
     <div id="lista-premios">
       <div class="loading-box">Carregando vitrine...</div>
     </div>
@@ -173,7 +173,7 @@
         const data = await res.json();
         if (data.error) throw new Error(data.error);
         document.getElementById('user-pontos').innerHTML = `${data.pontos} <span>pts</span>`;
-        if (data.telefone) document.getElementById('alerta-vincular').style.display = 'none';
+        if (data.cpf) document.getElementById('alerta-vincular').style.display = 'none';
       } catch (e) { document.getElementById('user-pontos').innerHTML = `Erro`; }
     }
 
@@ -221,20 +221,42 @@
       } catch (e) { alert("Erro: " + e.message); }
     }
 
-    async function vincularTelefone() {
-      const zap = prompt("Digite seu WhatsApp (apenas números):");
-      if(zap && zap.length >= 10) {
-        try {
-          const res = await fetch(API_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ acao: 'vincular_telefone', device_id: meuDeviceId, telefone: zap })
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error);
-          document.getElementById('alerta-vincular').style.display = 'none';
-          alert("Vinculado com sucesso!");
-        } catch (e) { alert("Erro ao vincular."); }
+    async function vincularCpf() {
+      const cpf1 = prompt("Digite seu CPF (apenas números):");
+      if (!cpf1) return;
+      const cpfLimpo1 = cpf1.replace(/\D/g, '');
+
+      if (cpfLimpo1.length !== 11) {
+        alert("CPF inválido. Deve conter 11 dígitos.");
+        return;
       }
+
+      const cpf2 = prompt("Confirme seu CPF (digite novamente):");
+      if (!cpf2) return;
+      const cpfLimpo2 = cpf2.replace(/\D/g, '');
+
+      if (cpfLimpo1 !== cpfLimpo2) {
+        alert("Os CPFs não conferem. Tente novamente.");
+        return;
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acao: 'vincular_cpf', device_id: meuDeviceId, cpf: cpfLimpo1 })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        document.getElementById('alerta-vincular').style.display = 'none';
+        document.getElementById('user-pontos').innerHTML = `${data.pontos} <span>pts</span>`;
+
+        if (data.recuperado) {
+          alert(`✅ CPF vinculado com sucesso!\n\nEncontramos seus pontos anteriores e recuperamos seu saldo para este aparelho: ${data.pontos} pts.`);
+        } else {
+          alert("✅ CPF vinculado com sucesso! Seus pontos agora estão protegidos.");
+        }
+      } catch (e) { alert("Erro ao vincular CPF: " + e.message); }
     }
 
     function iniciarScanner() {
@@ -253,12 +275,11 @@
         formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
         qrbox: (viewfinderWidth, viewfinderHeight) => {
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-          // Voltamos para um tamanho confortável na tela
           return { width: minEdge * 0.75, height: minEdge * 0.75 };
         }
       };
 
-      // A MÁGICA AQUI: Trocamos "environment" (traseira) por "user" (frontal)
+      // Usando a câmera frontal para garantir o foco perfeito de perto
       html5QrcodeScanner.start(
         { facingMode: "user" }, 
         config,
@@ -269,7 +290,7 @@
         pararScanner(); 
       });
     }
-    
+
     function pararScanner() {
       if (html5QrcodeScanner) {
         html5QrcodeScanner.stop().then(() => {
