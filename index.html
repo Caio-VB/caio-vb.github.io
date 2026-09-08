@@ -15,20 +15,14 @@
 
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f6f3ee; color: #1e140d; min-height: 100vh; padding-bottom: 40px; }
+    body { background-color: #f6f3ee; color: #1e140d; min-height: 100vh; padding-bottom: 90px; }
 
     /* Bloqueio de pop-ups automáticos injetados pelo OneSignal */
-    #onesignal-slidedown-container,
-    .onesignal-slidedown-container,
-    #onesignal-bell-container,
-    .onesignal-bell-container {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
+    #onesignal-slidedown-container, .onesignal-slidedown-container, #onesignal-bell-container, .onesignal-bell-container {
+      display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
     }
 
-    /* Top Bar Café Degrade */
+    /* Top Bar */
     .top-header {
       background: linear-gradient(180deg, #3d1c06 0%, #200d02 100%);
       padding: 24px 20px 32px 20px;
@@ -40,16 +34,8 @@
     }
     .header-info { display: flex; align-items: center; gap: 12px; }
     .header-logo {
-      width: 44px;
-      height: 44px;
-      background: #faece3;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      flex-shrink: 0;
+      width: 44px; height: 44px; background: #faece3; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0;
     }
     .header-title { font-size: 18px; font-weight: 700; color: #ffffff; line-height: 1.2; }
     .header-sub { font-size: 12px; color: #d6bda8; margin-top: 3px; }
@@ -59,111 +45,51 @@
 
     /* Botões de Ação */
     .btn-action {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      transition: opacity 0.2s, transform 0.1s;
+      width: 100%; border: none; border-radius: 14px; padding: 14px 16px; font-size: 14px;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 12px; transition: opacity 0.2s, transform 0.1s;
     }
     .btn-action:active { opacity: 0.9; transform: scale(0.98); }
-
-    /* Botão de Instalação */
-    #btn-instalar-app {
-      background: #ffffff;
-      color: #200d02;
-      border: 1px solid #efe4d5;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    }
-
-    /* Botão de Notificações */
-    #btn-ativar {
-      display: none;
-      background: linear-gradient(135deg, #a0461b 0%, #8c3b12 100%);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(140, 59, 18, 0.25);
-    }
+    #btn-instalar-app { background: #ffffff; color: #200d02; border: 1px solid #efe4d5; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+    #btn-ativar { display: none; background: linear-gradient(135deg, #a0461b 0%, #8c3b12 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(140, 59, 18, 0.25); }
     #btn-ativar:disabled { background: #b8aba0; cursor: not-allowed; box-shadow: none; }
 
-    /* Banner explicativo no navegador comum */
+    /* Banners e Textos */
     .banner-install-info {
-      background: #fdfaf6;
-      border: 1px dashed #d5c8bb;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 12px;
-      color: #786b62;
-      line-height: 1.4;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      background: #fdfaf6; border: 1px dashed #d5c8bb; padding: 12px 14px; border-radius: 12px;
+      font-size: 12px; color: #786b62; line-height: 1.4; margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
     }
-
-    /* Seção de Título com espaçamento ajustado */
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 36px 4px 14px;
-    }
+    .section-header { display: flex; align-items: center; gap: 8px; margin: 36px 4px 14px; }
     .section-title { font-size: 15px; font-weight: 700; color: #403024; }
-    .badge-count {
-      background: #faece3;
-      color: #9a431a;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
+    .badge-count { background: #faece3; color: #9a431a; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 12px; }
 
     /* Cards de Promoções */
     .card-promo {
-      background: #ffffff;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-bottom: 16px;
-      border: 1px solid #efe8df;
-      box-shadow: 0 3px 12px rgba(45, 24, 8, 0.04);
+      background: #ffffff; border-radius: 20px; overflow: hidden; margin-bottom: 16px;
+      border: 1px solid #efe8df; box-shadow: 0 3px 12px rgba(45, 24, 8, 0.04);
     }
-    .promo-media {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background: #f0ebe4;
-      display: block;
-    }
+    .promo-media { width: 100%; height: 180px; object-fit: cover; background: #f0ebe4; display: block; }
     .promo-body { padding: 16px 18px 18px; }
     .badge-promo {
-      display: inline-block;
-      background: #faece3;
-      color: #9a431a;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      display: inline-block; background: #faece3; color: #9a431a; font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 8px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
     }
     .promo-title { font-size: 16px; font-weight: 700; color: #1e140d; margin-bottom: 4px; line-height: 1.3; }
     .promo-desc { font-size: 13px; color: #6d6055; line-height: 1.4; margin-bottom: 12px; }
-    .promo-validade {
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .promo-validade { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; color: #9a431a;}
     .loading-box { text-align: center; color: #8c7e73; font-size: 13px; padding: 30px 10px; }
+
+    /* Barra Inferior (Bottom Nav) */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #ffffff;
+      border-top: 1px solid #eee8df; display: flex; justify-content: space-around; align-items: center; z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px;
+      font-weight: 600; color: #94877d; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .nav-item.active { color: #a0461b; }
+    .nav-item svg { width: 22px; height: 22px; }
 
     /* Modal Tutorial iPhone */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
@@ -182,84 +108,39 @@
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1",
-        welcomeNotification: {
-          disable: true
-        }
-      });
-
+      await OneSignal.init({ appId: "3848f19b-f5ef-45a5-a307-ad0a89725eb1", welcomeNotification: { disable: true } });
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      if (isStandalone && Notification.permission === "granted") {
-        await OneSignal.User.PushSubscription.optIn();
-      }
-
-      // Avalia a visibilidade do botão logo após o OneSignal inicializar
+      if (isStandalone && Notification.permission === "granted") await OneSignal.User.PushSubscription.optIn();
       gerenciarVisibilidadeNotificacao();
-
-      // Monitora mudanças no status de inscrição
-      OneSignal.User.PushSubscription.addEventListener("change", () => {
-        gerenciarVisibilidadeNotificacao();
-      });
+      OneSignal.User.PushSubscription.addEventListener("change", () => gerenciarVisibilidadeNotificacao());
     });
 
-    // Função que decide se o botão de notificações deve aparecer ou sumir
     function gerenciarVisibilidadeNotificacao() {
       const btn = document.getElementById('btn-ativar');
       if (!btn) return;
-
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      
-      // Se não for app instalado na tela inicial, o botão nunca aparece
-      if (!isStandalone) {
-        btn.style.display = 'none';
-        return;
-      }
-
+      if (!isStandalone) { btn.style.display = 'none'; return; }
       const permissaoConcedida = ("Notification" in window) && Notification.permission === "granted";
       const estaInscrito = window.OneSignal?.User?.PushSubscription?.optedIn ?? false;
-
-      // Se já permitiu e está devidamente inscrito, o botão some
-      if (permissaoConcedida && estaInscrito) {
-        btn.style.display = 'none';
-      } else {
-        // Se ainda não ativou ou se desativou nas opções do sistema, ele reaparece
-        btn.style.display = 'flex';
-      }
+      if (permissaoConcedida && estaInscrito) btn.style.display = 'none'; else btn.style.display = 'flex';
     }
 
-    // Reavalia quando o usuário volta para o app
-    window.addEventListener('focus', () => {
-      gerenciarVisibilidadeNotificacao();
-    });
+    window.addEventListener('focus', () => gerenciarVisibilidadeNotificacao());
 
     async function ativarNotificacoes() {
       const btn = document.getElementById('btn-ativar');
       if (btn) btn.disabled = true;
-
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       window.OneSignalDeferred.push(async function(OneSignal) {
         try {
-          if ("Notification" in window && Notification.permission === "denied") {
-            alert("As notificações estão bloqueadas no aparelho.\n\nVá em: Configurações do Celular > Aplicativos > Cafeteria > Notificações e ative a permissão.");
-            return;
-          }
-
+          if ("Notification" in window && Notification.permission === "denied") { alert("As notificações estão bloqueadas no aparelho.\n\nVá em: Configurações do Celular > Aplicativos > Cafeteria > Notificações e ative a permissão."); return; }
           await OneSignal.Notifications.requestPermission();
           await OneSignal.User.PushSubscription.optIn();
           await new Promise(r => setTimeout(r, 1500));
-
-          if (OneSignal.User.PushSubscription.optedIn) {
-            alert("Notificações ativadas com sucesso. Mostre essa mensagem para o atendente e ganhe a sua recompensa!");
-            gerenciarVisibilidadeNotificacao(); // Faz o botão sumir na mesma hora
-          } else {
-            alert("Permissão registrada! Se for seu primeiro acesso, reinicie o app.");
-          }
-        } catch (e) {
-          alert("Erro ao registrar notificações: " + e.message);
-        } finally {
-          if (btn) btn.disabled = false;
-        }
+          if (OneSignal.User.PushSubscription.optedIn) { alert("Notificações ativadas! Mostre essa mensagem para o atendente e ganhe sua recompensa!"); gerenciarVisibilidadeNotificacao(); } 
+          else { alert("Permissão registrada! Se for seu primeiro acesso, reinicie o app."); }
+        } catch (e) { alert("Erro ao registrar notificações: " + e.message); } 
+        finally { if (btn) btn.disabled = false; }
       });
     }
   </script>
@@ -280,66 +161,55 @@
   </header>
 
   <div class="container">
-    
-    <!-- Botão de Instalação (Exibido apenas fora do app instalado) -->
     <button id="btn-instalar-app" class="btn-action" onclick="iniciarInstalacao()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       Instalar Aplicativo no Celular
     </button>
 
-    <!-- Banner explicativo no navegador comum -->
     <div id="banner-dica-install" class="banner-install-info">
-      <span>💡</span>
-      <span>Instale o aplicativo no seu aparelho para receber as nossas promoções em primeira mão.</span>
+      <span>💡</span> <span>Instale o aplicativo no seu aparelho para receber as nossas promoções em primeira mão.</span>
     </div>
 
-    <!-- Botão de Notificações (Só visível se o app estiver instalado E notificações não estiverem ativas) -->
     <button id="btn-ativar" class="btn-action" onclick="ativarNotificacoes()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
       Receber Avisos de Promoções
     </button>
 
-    <!-- Cabeçalho da Lista -->
     <div class="section-header">
       <span class="section-title">Ofertas Disponíveis</span>
       <span class="badge-count" id="badge-total-user">0</span>
     </div>
 
-    <!-- Lista de Promoções -->
     <div id="lista-promos">
       <div class="loading-box">Buscando as delícias de hoje...</div>
     </div>
-
   </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      Ofertas
+    </a>
+    <a href="fidelidade.html" class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+      Fidelidade
+    </a>
+  </nav>
 
   <!-- Modal Tutorial iPhone -->
   <div class="modal-overlay" id="iosOverlay" onclick="fecharModalIos()"></div>
   <div class="sheet-box" id="iosSheet">
     <div class="sheet-title">Instalar no seu iPhone</div>
     <div class="sheet-sub">Adicione o aplicativo à sua Tela de Início em 2 passos:</div>
-
     <div class="step-item">
-      <div class="step-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-          <polyline points="16 6 12 2 8 6"/>
-          <line x1="12" y1="2" x2="12" y2="15"/>
-        </svg>
-      </div>
+      <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
       <div class="step-text">1. Na barra inferior do Safari, toque no botão <strong>Compartilhar</strong>.</div>
     </div>
-
     <div class="step-item">
-      <div class="step-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="3" ry="3"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
-      </div>
+      <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a431a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3" ry="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
       <div class="step-text">2. Role para baixo e toque em <strong>Adicionar à Tela de Início</strong>.</div>
     </div>
-
     <button class="btn-fechar-sheet" onclick="fecharModalIos()">Entendido</button>
   </div>
 
@@ -354,9 +224,7 @@
       try {
         const res = await fetch(`${API_URL}?t=${Date.now()}`);
         const promocoes = await res.json();
-
         if (!Array.isArray(promocoes)) throw new Error('Falha ao consultar');
-
         badge.innerText = promocoes.length;
 
         if (!promocoes.length) {
@@ -384,63 +252,40 @@
             </div>
           </div>
         `).join('');
-      } catch (err) {
-        container.innerHTML = "<p class='loading-box'>Erro ao atualizar promoções.</p>";
-      }
+      } catch (err) { container.innerHTML = "<p class='loading-box'>Erro ao atualizar promoções.</p>"; }
     }
 
     buscarPromocoes();
 
-    // Controles de PWA
     const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    
     const btnInstalar = document.getElementById('btn-instalar-app');
     const bannerDica = document.getElementById('banner-dica-install');
 
-    if (isStandalone) {
-      btnInstalar.style.display = 'none';
-      bannerDica.style.display = 'none';
-    } else {
-      btnInstalar.style.display = 'flex';
-      bannerDica.style.display = 'flex';
-    }
+    if (isStandalone) { btnInstalar.style.display = 'none'; bannerDica.style.display = 'none'; } 
+    else { btnInstalar.style.display = 'flex'; bannerDica.style.display = 'flex'; }
 
     let deferredPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-    });
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 
     async function iniciarInstalacao() {
-      if (isIos()) {
-        abrirModalIos();
-      } else if (deferredPrompt) {
+      if (isIos()) { abrirModalIos(); } 
+      else if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
-        if (outcome === 'accepted') {
-          btnInstalar.style.display = 'none';
-        }
+        if (outcome === 'accepted') btnInstalar.style.display = 'none';
       }
     }
 
     window.addEventListener('appinstalled', () => {
       btnInstalar.style.display = 'none';
-      bannerDica.innerHTML = `
-        Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações e receber a sua recompensa.
-      `;
+      bannerDica.innerHTML = `Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações e receber a sua recompensa.`;
       alert("Aguarde o App ser instalado e abra pelo ícone na tela inicial para ativar as notificações e receber a sua recompensa.");
     });
 
-    function abrirModalIos() {
-      document.getElementById('iosOverlay').style.display = 'block';
-      setTimeout(() => document.getElementById('iosSheet').classList.add('active'), 10);
-    }
-    function fecharModalIos() {
-      document.getElementById('iosSheet').classList.remove('active');
-      setTimeout(() => document.getElementById('iosOverlay').style.display = 'none', 300);
-    }
+    function abrirModalIos() { document.getElementById('iosOverlay').style.display = 'block'; setTimeout(() => document.getElementById('iosSheet').classList.add('active'), 10); }
+    function fecharModalIos() { document.getElementById('iosSheet').classList.remove('active'); setTimeout(() => document.getElementById('iosOverlay').style.display = 'none', 300); }
   </script>
 </body>
 </html>
