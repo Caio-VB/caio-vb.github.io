@@ -161,7 +161,15 @@
 
     async function inicializarApp() {
       meuDeviceId = localStorage.getItem('fidelidade_device_id');
-      if (!meuDeviceId) { meuDeviceId = gerarIdAparelho(); localStorage.setItem('fidelidade_device_id', meuDeviceId); }
+      if (!meuDeviceId) { 
+        meuDeviceId = gerarIdAparelho().toLowerCase(); // Garante que nasce em minúsculo
+        localStorage.setItem('fidelidade_device_id', meuDeviceId); 
+      } else {
+        meuDeviceId = meuDeviceId.toLowerCase(); // Garante que IDs antigos também fiquem em minúsculo
+        localStorage.setItem('fidelidade_device_id', meuDeviceId);
+      }
+      
+      // Exibe em maiúsculo só no visual do topo, mas guarda a variável em minúsculo
       document.getElementById('header-id').innerText = "ID: " + meuDeviceId.toUpperCase();
       await carregarMeusPontos();
       await carregarPremios();
