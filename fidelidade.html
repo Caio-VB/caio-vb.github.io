@@ -250,28 +250,25 @@
       const config = {
         fps: 15,
         aspectRatio: 1.0, 
-        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], // Continua focando SÓ em QR Code (muito mais rápido)
+        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
         qrbox: (viewfinderWidth, viewfinderHeight) => {
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
           return { width: minEdge * 0.85, height: minEdge * 0.85 };
+        },
+        // O SEGREDO ESTÁ AQUI: As resoluções entram dentro do config
+        videoConstraints: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         }
       };
 
-      // Câmera relaxada: Pede o HD, mas aceita o que o celular conseguir entregar
-      const cameraConstraints = {
-        facingMode: "environment", // Câmera traseira
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      };
-
       html5QrcodeScanner.start(
-        cameraConstraints, 
+        { facingMode: "environment" }, // O primeiro parâmetro volta a ter APENAS 1 chave!
         config,
         (decodedText) => { pararScanner(); processarNotaFiscal(decodedText); }, 
         (error) => {} 
       ).catch(err => { 
-        // Alterei o alerta para mostrar o erro real caso aconteça de novo
-        alert("Erro técnico da câmera: " + (err.message || err)); 
+        alert("Erro ao acessar a câmera: " + (err.message || err)); 
         pararScanner(); 
       });
     }
