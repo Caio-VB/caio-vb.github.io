@@ -248,23 +248,20 @@
       html5QrcodeScanner = new Html5Qrcode("reader");
       
       const config = {
-        fps: 15, // Deixa a leitura um pouco mais rápida (15 quadros por segundo)
+        fps: 15,
         aspectRatio: 1.0, 
-        // O SEGREDO 1: Manda a biblioteca ignorar código de barras normais e focar SÓ em QR Code
-        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], 
+        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ], // Continua focando SÓ em QR Code (muito mais rápido)
         qrbox: (viewfinderWidth, viewfinderHeight) => {
-          // Aumenta a área de leitura para 85% da tela, facilitando enquadrar a nota
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
           return { width: minEdge * 0.85, height: minEdge * 0.85 };
         }
       };
 
-      // O SEGREDO 2: Força o navegador a abrir a lente em HD (720p ou 1080p) e ativa o foco contínuo
+      // Câmera relaxada: Pede o HD, mas aceita o que o celular conseguir entregar
       const cameraConstraints = {
-        facingMode: "environment",
-        width: { min: 640, ideal: 1280, max: 1920 },
-        height: { min: 480, ideal: 720, max: 1080 },
-        advanced: [{ focusMode: "continuous" }]
+        facingMode: "environment", // Câmera traseira
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
       };
 
       html5QrcodeScanner.start(
@@ -273,7 +270,8 @@
         (decodedText) => { pararScanner(); processarNotaFiscal(decodedText); }, 
         (error) => {} 
       ).catch(err => { 
-        alert("Erro ao acessar a câmera. Verifique as permissões do seu navegador."); 
+        // Alterei o alerta para mostrar o erro real caso aconteça de novo
+        alert("Erro técnico da câmera: " + (err.message || err)); 
         pararScanner(); 
       });
     }
