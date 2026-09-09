@@ -1,6 +1,6 @@
 {
-  "name": "Café da Esquina",
-  "short_name": "Café da Esquina",
+  "name": "Café do Bairro",
+  "short_name": "Café do Bairro",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

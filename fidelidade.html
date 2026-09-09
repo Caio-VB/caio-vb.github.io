@@ -100,8 +100,8 @@
       <img src="https://cdn-icons-png.flaticon.com/512/924/924514.png" alt="Logo" style="width: 24px; height: 24px; object-fit: contain;">
     </div>
     <div>
-      <div class="header-title">Cafeteria da Esquina</div>
-      <div class="header-sub" id="header-id">Gerando seu passe...</div>
+      <div class="header-title">Cafeteria do Bairro</div>
+      <div class="header-sub">Resgate Recompensas Deliciosas</div>
     </div>
   </header>
 
@@ -169,8 +169,7 @@
         localStorage.setItem('fidelidade_device_id', meuDeviceId);
       }
       
-      // Exibe em maiúsculo só no visual do topo, mas guarda a variável em minúsculo
-      document.getElementById('header-id').innerText = "ID: " + meuDeviceId.toUpperCase();
+      // Guarda o ID do aparelho
       await carregarMeusPontos();
       await carregarPremios();
     }

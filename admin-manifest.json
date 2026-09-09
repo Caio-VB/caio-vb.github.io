@@ -1,6 +1,6 @@
 {
-  "name": "Admin - Café da Esquina",
-  "short_name": "Admin - Café da Esquina",
+  "name": "Admin - Café do Bairro",
+  "short_name": "Admin - Café do Bairro",
   "start_url": "./admin.html",
   "display": "standalone",
   "background_color": "#200d02",
